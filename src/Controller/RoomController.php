@@ -11,7 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class RoomController extends AbstractController
+class
+RoomController extends AbstractController
 {
     /**
      * @var RoomRepository
@@ -35,7 +36,7 @@ class RoomController extends AbstractController
 
         return $this->json([
             'rooms'=>$rooms
-        ]);
+        ],200);
     }
 
     /**
@@ -71,7 +72,7 @@ class RoomController extends AbstractController
 
         return $this->json([
             'room'=>$room
-        ]);
+        ],200);
     }
 
     /**
@@ -90,7 +91,7 @@ class RoomController extends AbstractController
 
         return $this->json([
             'room'=>$room
-        ]);
+        ],201);
     }
 
     /**
@@ -106,6 +107,6 @@ class RoomController extends AbstractController
 
         return $this->json([
             'room'=>$room
-        ]);
+        ],200);
     }
 }

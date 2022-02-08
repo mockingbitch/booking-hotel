@@ -29,3 +29,9 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    Symfony\Component\Serializer\Normalizer\ObjectNormalizer:
+        tags:
+            - { name: serializer.normalizer }
+    App\Controller\AmountController:
+        arguments:
+            $amountService: '@App\Service\AmountService'

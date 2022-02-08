@@ -29,9 +29,15 @@ class Room
      */
     private $bookingDetails;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Amount::class, mappedBy="room")
+     */
+    private $amounts;
+
     public function __construct()
     {
         $this->bookingDetails = new ArrayCollection();
+        $this->amounts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -75,6 +81,36 @@ class Room
             // set the owning side to null (unless already changed)
             if ($bookingDetail->getRoom() === $this) {
                 $bookingDetail->setRoom(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Amount[]
+     */
+    public function getAmounts(): Collection
+    {
+        return $this->amounts;
+    }
+
+    public function addAmount(Amount $amount): self
+    {
+        if (!$this->amounts->contains($amount)) {
+            $this->amounts[] = $amount;
+            $amount->setRoom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAmount(Amount $amount): self
+    {
+        if ($this->amounts->removeElement($amount)) {
+            // set the owning side to null (unless already changed)
+            if ($amount->getRoom() === $this) {
+                $amount->setRoom(null);
             }
         }
 

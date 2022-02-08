@@ -48,6 +48,12 @@ class AmountRepository extends ServiceEntityRepository
     }
     */
 
+    /**
+     * @param $id
+     * @return Amount|null
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function findByRoomId($id): ?Amount
     {
         return $this->createQueryBuilder('a')
@@ -55,6 +61,61 @@ class AmountRepository extends ServiceEntityRepository
             ->setParameter('val', $id)
             ->getQuery()
             ->getOneOrNullResult()
+            ;
+    }
+
+    /**
+     * @param $first
+     * @param $last
+     * @param $step
+     * @param $format
+     * @return array
+     */
+    function dateRange($first, $last) {
+        $step = '+1 day';
+        $format = 'Y-m-d';
+        $dates = array();
+        $current = strtotime($first);
+        $last = strtotime($last);
+
+        while( $current <= $last ) {
+            $dates[] = date($format, $current);
+            $current = strtotime($step, $current);
+        }
+        return $dates;
+    }
+
+    /**
+     * @param $room_id
+     * @param $start_date
+     * @param $end_date
+     *
+     * @return float|int|mixed|string|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findByDayRange($room_id,$start_date,$end_date)
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.room = :val')
+            ->andWhere('a.day >= :start')
+            ->andWhere('a.day <= :end')
+            ->setParameter('val', $room_id)
+            ->setParameter('start',$start_date)
+            ->setParameter('end',$end_date)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
+    public function findByDay($room_id,$special_date)
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.room = :val')
+            ->andWhere('a.day = :day')
+            ->setParameter('val', $room_id)
+            ->setParameter('day',$special_date)
+            ->getQuery()
+            ->getResult();
             ;
     }
 }

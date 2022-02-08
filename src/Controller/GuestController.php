@@ -10,9 +10,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 
-class GuestController extends ApiController
+class GuestController extends AbstractController
 {
+    /**
+     * @var GuestRepository
+     */
     private $guestRepository;
+
+    /**
+     * @param GuestRepository $guestRepository
+     */
     public function __construct(GuestRepository $guestRepository)
     {
         $this->guestRepository = $guestRepository;
@@ -27,16 +34,13 @@ class GuestController extends ApiController
 
         return $this->json([
             'guests' => $guests
-        ]);
+        ],200);
     }
 
     /**
      * @param Request $request
      *
-     * @return false|Response
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return false|\Symfony\Component\HttpFoundation\JsonResponse
      */
     public function create(Request $request)
     {
@@ -50,37 +54,31 @@ class GuestController extends ApiController
         $guest->setPhone($request['phone']);
         $this->getDoctrine()->getManager()->persist($guest);
         $this->getDoctrine()->getManager()->flush();
-//        $response = $this->createApiResponse(['guest' => $guest], 201);
 
         return $this->json([
             'guest'=>$guest
-        ]);
+        ],201);
     }
 
     /**
      * @param $id
      *
-     * @return Response
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function show($id)
     {
         $guest = $this->guestRepository->find($id);
-        $response = $this->createApiResponse(['guest'=>$guest],200);
 
-        return $response;
+        return $this->json([
+            'guest'=>$guest
+        ],200);
     }
 
     /**
      * @param $id
      * @param Request $request
      *
-     * @return Response
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function update($id, Request $request)
     {
@@ -90,26 +88,25 @@ class GuestController extends ApiController
         $guest->setPhone($request['phone']);
         $this->getDoctrine()->getManager()->persist($guest);
         $this->getDoctrine()->getManager()->flush();
-        $response = $this->createApiResponse(['guest'=>$guest],201);
 
-        return $response;
+        return $this->json([
+            'guest'=>$guest
+        ],201);
     }
 
     /**
      * @param $id
      *
-     * @return Response
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function delete($id)
     {
         $guest = $this->guestRepository->find($id);
         $this->getDoctrine()->getManager()->remove($guest);
         $this->getDoctrine()->getManager()->flush();
-        $response = $this->createApiResponse('',200);
 
-        return $response;
+        return $this->json([
+            'guest'=>$guest
+        ],200);
     }
 }

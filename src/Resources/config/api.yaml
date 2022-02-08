@@ -1,0 +1,72 @@
+index:
+  path: /
+  controller: App\Controller\HomeController::index
+  methods: [GET]
+
+#Room
+room_list:
+  path: /room/list
+  controller: App\Controller\RoomController::list
+  methods: [GET]
+
+room_create:
+  path: /room/create
+  controller: App\Controller\RoomController::create
+  methods: [POST]
+
+room_show:
+  path: /room/show/{id}
+  controller: App\Controller\RoomController::show
+  methods: [GET]
+
+room_update:
+  path: /room/update/{id}
+  controller: App\Controller\RoomController::update
+  methods: [POST|GET]
+
+room_delete:
+  path: /room/delete/{id}
+  controller: App\Controller\RoomController::delete
+  methods: [GET]
+
+#Guest
+guest_list:
+  path: /guest/list
+  controller: App\Controller\GuestController::list
+  methods: [GET]
+
+guest_create:
+  path: /guest/create
+  controller: App\Controller\GuestController::create
+  methods: [POST]
+
+guest_show:
+  path: /guest/show/{id}
+  controller: App\Controller\GuestController::show
+  methods: [GET]
+
+guest_update:
+  path: /guest/update/{id}
+  controller: App\Controller\GuestController::update
+  methods: [POST|GET]
+
+guest_delete:
+  path: /guest/delete/{id}
+  controller: App\Controller\GuestController::delete
+  methods: [GET]
+
+#Amount
+amount_create:
+  path: /amount/create/{room_id}
+  controller: App\Controller\AmountController::create
+  methods: [POST|GET]
+amount_update:
+  path: /amount/update/{room_id}
+  controller: App\Controller\AmountController::update
+  methods: [POST|GET]
+
+#Booking
+booking_create:
+  path: /booking/create
+  controller: App\Controller\BookingController::create
+  methods: [POST]

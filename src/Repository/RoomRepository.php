@@ -47,4 +47,19 @@ class RoomRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /**
+     * @param $room_id
+     *
+     * @return float|int|mixed|string
+     */
+    public function findById($room_id)
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.id = :val')
+            ->setParameter('val', $room_id)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
 }

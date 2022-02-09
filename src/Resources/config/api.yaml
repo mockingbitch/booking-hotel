@@ -70,3 +70,8 @@ booking_create:
   path: /booking/create
   controller: App\Controller\BookingController::create
   methods: [POST]
+
+booking_list:
+  path: /booking/list
+  controller: App\Controller\BookingController::list
+  methods: [GET]

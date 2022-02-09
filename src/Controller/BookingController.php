@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Booking;
 use App\Entity\BookingDetail;
+use App\Repository\AmountRepository;
 use App\Repository\BookingRepository;
 use App\Repository\GuestRepository;
 use App\Repository\RoomRepository;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class BookingController extends AbstractController
 {
@@ -30,19 +32,27 @@ class BookingController extends AbstractController
    private $guestRepository;
 
     /**
+     * @var $amountRepository
+     */
+   private $amountRepository;
+
+    /**
      * @param BookingRepository $bookingRepository
      * @param GuestRepository $guestRepository
      * @param RoomRepository $roomRepository
+     * @param AmountRepository $amountRepository
      */
    public function __construct(
        BookingRepository $bookingRepository,
        GuestRepository $guestRepository,
-       RoomRepository $roomRepository
+       RoomRepository $roomRepository,
+       AmountRepository $amountRepository
    )
    {
        $this->bookingRepository = $bookingRepository;
        $this->guestRepository = $guestRepository;
        $this->roomRepository = $roomRepository;
+       $this->amountRepository = $amountRepository;
    }
 
     /**
@@ -54,7 +64,11 @@ class BookingController extends AbstractController
 
        return $this->json([
            'bookings'=>$bookings
-       ],200);
+       ],200,[],[
+           ObjectNormalizer::IGNORED_ATTRIBUTES=>['date','bookingDetails'],
+           ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER=>function($object){
+               return $object->getId();
+           }]);
    }
 
     /**
@@ -74,10 +88,18 @@ class BookingController extends AbstractController
        $booking->setDate(\DateTime::createFromFormat('Y-m-d',$request['date']));
        $booking->setStatus(0);
        $this->getDoctrine()->getManager()->persist($booking);
-       foreach ($rooms as $room)
+       foreach ($rooms as $value)
        {
            $bookingDetails = new BookingDetail();
-           $room = $this->roomRepository->findById($room);
+           $room = $this->roomRepository->findById($value);
+           $date = $this->amountRepository->dateRange($start_date,$end_date);
+           $total = 0;
+           foreach ($date as $key){
+
+               $amount = $this->amountRepository->findPriceByDay($value,$key)->getPrice();
+               $total = $total + $amount;
+           }
+           dd($total);
            $bookingDetails->setBooking($booking);
            $bookingDetails->setRoom($room);
            $bookingDetails->setStartDate(\DateTime::createFromFormat('Y-m-d',$start_date));
@@ -99,10 +121,15 @@ class BookingController extends AbstractController
    public function show($id)
    {
        $booking = $this->bookingRepository->find($id);
+        $room = $this->roomRepository->findAll();
 
        return $this->json([
            'booking'=>$booking
-       ],200);
+       ],200,[],[
+           ObjectNormalizer::IGNORED_ATTRIBUTES=>['date','bookingDetails'],
+           ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER=>function($object){
+               return $object->getId();
+           }]);
    }
 
     /**
@@ -121,9 +148,7 @@ class BookingController extends AbstractController
        $booking->setTotalAmount($request['totalAmount']);
        $booking->setStatus($request['status']);
 
-       return $this->json([
-           'booking'=>$booking
-       ],201);
+       return $this->json([],201);
    }
 
     /**

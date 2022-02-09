@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class
 RoomController extends AbstractController
@@ -36,7 +37,11 @@ RoomController extends AbstractController
 
         return $this->json([
             'rooms'=>$rooms
-        ],200);
+        ],200,[],[
+            ObjectNormalizer::IGNORED_ATTRIBUTES=>['bookingDetails','amounts'],
+            ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER=>function($object){
+            return $object->getId();
+        }]);
     }
 
     /**
@@ -56,9 +61,7 @@ RoomController extends AbstractController
         $this->getDoctrine()->getManager()->persist($room);
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->json([
-            'room'=>$room
-        ],201);
+        return $this->json([],201);
     }
 
     /**
@@ -72,7 +75,11 @@ RoomController extends AbstractController
 
         return $this->json([
             'room'=>$room
-        ],200);
+        ],200,[],[
+            ObjectNormalizer::IGNORED_ATTRIBUTES=>['bookingDetails','amounts'],
+            ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER=>function($object){
+                return $object->getId();
+            }]);
     }
 
     /**

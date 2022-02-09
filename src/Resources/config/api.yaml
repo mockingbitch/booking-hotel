@@ -5,73 +5,74 @@ index:
 
 #Room
 room_list:
-  path: /room/list
+  path: /room
   controller: App\Controller\RoomController::list
   methods: [GET]
 
 room_create:
-  path: /room/create
+  path: /room
   controller: App\Controller\RoomController::create
   methods: [POST]
 
 room_show:
-  path: /room/show/{id}
+  path: /room/{id}
   controller: App\Controller\RoomController::show
   methods: [GET]
 
 room_update:
-  path: /room/update/{id}
+  path: /room/{id}
   controller: App\Controller\RoomController::update
-  methods: [POST|GET]
+  methods: [PUT]
 
 room_delete:
-  path: /room/delete/{id}
+  path: /room/{id}
   controller: App\Controller\RoomController::delete
-  methods: [GET]
+  methods: [DELETE]
 
 #Guest
 guest_list:
-  path: /guest/list
+  path: /guest
   controller: App\Controller\GuestController::list
   methods: [GET]
 
 guest_create:
-  path: /guest/create
+  path: /guest
   controller: App\Controller\GuestController::create
   methods: [POST]
 
 guest_show:
-  path: /guest/show/{id}
+  path: /guest/{id}
   controller: App\Controller\GuestController::show
   methods: [GET]
 
 guest_update:
-  path: /guest/update/{id}
+  path: /guest/{id}
   controller: App\Controller\GuestController::update
-  methods: [POST|GET]
+  methods: [PUT]
 
 guest_delete:
-  path: /guest/delete/{id}
+  path: /guest/{id}
   controller: App\Controller\GuestController::delete
-  methods: [GET]
+  methods: [DELETE]
 
 #Amount
 amount_create:
-  path: /amount/create/{room_id}
+  path: /amount
   controller: App\Controller\AmountController::create
-  methods: [POST|GET]
+  methods: [POST]
+
 amount_update:
-  path: /amount/update/{room_id}
+  path: /amount
   controller: App\Controller\AmountController::update
-  methods: [POST|GET]
+  methods: [PUT]
 
 #Booking
 booking_create:
-  path: /booking/create
+  path: /booking
   controller: App\Controller\BookingController::create
   methods: [POST]
 
 booking_list:
-  path: /booking/list
+  path: /booking
   controller: App\Controller\BookingController::list
   methods: [GET]

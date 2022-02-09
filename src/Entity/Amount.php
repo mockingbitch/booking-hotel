@@ -33,16 +33,27 @@ class Amount
      */
     private $day;
 
+    /**
+     * @return int
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return Room
+     */
     public function getRoom(): ?Room
     {
         return $this->room;
     }
 
+    /**
+     * @param Room $room
+     *
+     * @return $this
+     */
     public function setRoom(?Room $room): self
     {
         $this->room = $room;
@@ -50,11 +61,19 @@ class Amount
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getPrice(): ?string
     {
         return $this->price;
     }
 
+    /**
+     * @param string $price
+     *
+     * @return $this
+     */
     public function setPrice(string $price): self
     {
         $this->price = $price;
@@ -62,11 +81,19 @@ class Amount
         return $this;
     }
 
+    /**
+     * @return \DateTimeInterface
+     */
     public function getDay(): ?\DateTimeInterface
     {
         return $this->day;
     }
 
+    /**
+     * @param \DateTimeInterface $day
+     *
+     * @return $this
+     */
     public function setDay(\DateTimeInterface $day): self
     {
         $this->day = $day;

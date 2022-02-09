@@ -34,85 +34,37 @@ class Room
      */
     private $amounts;
 
+
     public function __construct()
     {
         $this->bookingDetails = new ArrayCollection();
         $this->amounts = new ArrayCollection();
     }
 
+    /**
+     * @return int
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|BookingDetail[]
-     */
-    public function getBookingDetails(): Collection
-    {
-        return $this->bookingDetails;
-    }
-
-    public function addBookingDetail(BookingDetail $bookingDetail): self
-    {
-        if (!$this->bookingDetails->contains($bookingDetail)) {
-            $this->bookingDetails[] = $bookingDetail;
-            $bookingDetail->setRoom($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBookingDetail(BookingDetail $bookingDetail): self
-    {
-        if ($this->bookingDetails->removeElement($bookingDetail)) {
-            // set the owning side to null (unless already changed)
-            if ($bookingDetail->getRoom() === $this) {
-                $bookingDetail->setRoom(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Amount[]
-     */
-    public function getAmounts(): Collection
-    {
-        return $this->amounts;
-    }
-
-    public function addAmount(Amount $amount): self
-    {
-        if (!$this->amounts->contains($amount)) {
-            $this->amounts[] = $amount;
-            $amount->setRoom($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAmount(Amount $amount): self
-    {
-        if ($this->amounts->removeElement($amount)) {
-            // set the owning side to null (unless already changed)
-            if ($amount->getRoom() === $this) {
-                $amount->setRoom(null);
-            }
-        }
 
         return $this;
     }

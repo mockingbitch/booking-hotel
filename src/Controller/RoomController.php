@@ -29,19 +29,15 @@ RoomController extends AbstractController
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return false|string|\Symfony\Component\HttpFoundation\JsonResponse
      */
     public function list()
     {
         $rooms = $this->roomRepository->findAll();
 
-        return $this->json([
-            'rooms'=>$rooms
-        ],200,[],[
-            ObjectNormalizer::IGNORED_ATTRIBUTES=>['bookingDetails','amounts'],
-            ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER=>function($object){
-            return $object->getId();
-        }]);
+        return $rooms?
+            $this->json(['rooms'=>$rooms],200):
+            $this->json(['msg'=>'Empty room!'],200);
     }
 
     /**
@@ -52,46 +48,13 @@ RoomController extends AbstractController
     public function create(Request $request)
     {
         $room = new Room();
-        $roomRequest = json_decode($request->getContent(), true);
-        if ($roomRequest == null)
+        $request = json_decode($request->getContent(), true);
+        if (!isset($request['name']))
         {
-            return false;
+            return $this->json([
+               'msg'=>'Expected value Name'
+            ],200);
         }
-        $room->setName($roomRequest['name']);
-        $this->getDoctrine()->getManager()->persist($room);
-        $this->getDoctrine()->getManager()->flush();
-
-        return $this->json([],201);
-    }
-
-    /**
-     * @param $id
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function show($id)
-    {
-        $room = $this->roomRepository->find($id);
-
-        return $this->json([
-            'room'=>$room
-        ],200,[],[
-            ObjectNormalizer::IGNORED_ATTRIBUTES=>['bookingDetails','amounts'],
-            ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER=>function($object){
-                return $object->getId();
-            }]);
-    }
-
-    /**
-     * @param $id
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function update($id, Request $request)
-    {
-        $room = $this->roomRepository->find($id);
-        $request = json_decode($request->getContent(),true);
         $room->setName($request['name']);
         $this->getDoctrine()->getManager()->persist($room);
         $this->getDoctrine()->getManager()->flush();
@@ -106,14 +69,65 @@ RoomController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function delete($id)
+    public function show($id)
     {
         $room = $this->roomRepository->find($id);
-        $this->getDoctrine()->getManager()->remove($room);
+
+        return $room?
+            $this->json(['room'=>$room],200):
+            $this->json(['msg'=>'Could not find room!'],404);
+    }
+
+    /**
+     * @param $id
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function update($id, Request $request)
+    {
+        $room = $this->roomRepository->find($id);
+        if (!isset($room))
+        {
+            return $this->json([
+               'msg'=>'Could not find room!'
+            ],404);
+        }
+        $request = json_decode($request->getContent(),true);
+        if (!isset($request['name']))
+        {
+            return $this->json([
+                'msg'=>'Expected value Name!'
+            ],200);
+        }
+        $room->setName($request['name']);
+        $this->getDoctrine()->getManager()->persist($room);
         $this->getDoctrine()->getManager()->flush();
 
         return $this->json([
             'room'=>$room
+        ],200);
+    }
+
+    /**
+     * @param $id
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function delete($id)
+    {
+        $room = $this->roomRepository->find($id);
+        if (!isset($room))
+        {
+            return $this->json([
+                'msg'=>'Could not find room!'
+            ],404);
+        }
+        $this->getDoctrine()->getManager()->remove($room);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->json([
+            'msg'=>'Delete successfully!'
         ],200);
     }
 }

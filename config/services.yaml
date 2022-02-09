@@ -32,6 +32,6 @@ services:
     Symfony\Component\Serializer\Normalizer\ObjectNormalizer:
         tags:
             - { name: serializer.normalizer }
-    App\Controller\AmountController:
-        arguments:
-            $amountService: '@App\Service\AmountService'
+#    App\Controller\AmountController:
+#        arguments:
+#            $amountService: '@App\Service\AmountService'

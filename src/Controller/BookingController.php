@@ -62,13 +62,9 @@ class BookingController extends AbstractController
    {
        $bookings = $this->bookingRepository->findAll();
 
-       return $this->json([
-           'bookings'=>$bookings
-       ],200,[],[
-           ObjectNormalizer::IGNORED_ATTRIBUTES=>['date','bookingDetails'],
-           ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER=>function($object){
-               return $object->getId();
-           }]);
+       return $bookings?
+           $this->json(['bookings'=>$bookings],200):
+           $this->json(['msg'=>'Empty booking'],200);
    }
 
     /**
@@ -80,23 +76,23 @@ class BookingController extends AbstractController
    {
        $booking = new Booking();
        $request = json_decode($request->getContent(), true);
+       if (!isset($request['room'],$request['start_date'],$request['end_date'],$request['guest']))
+       {
+            return $this->json(['msg'=>'Expected fields: room, guest, start_date, end_date'],200);
+       }
        $guest = $this->guestRepository->find($request['guest_id']);
-       $rooms = $request['room_id']??'';
-       $start_date = $request['start_date']??'';
-       $end_date = $request['end_date']??'';
        $booking->setGuest($guest);
        $booking->setDate(\DateTime::createFromFormat('Y-m-d',$request['date']));
        $booking->setStatus(0);
        $this->getDoctrine()->getManager()->persist($booking);
-       foreach ($rooms as $value)
+       foreach ($request['rooms'] as $room)
        {
            $bookingDetails = new BookingDetail();
-           $room = $this->roomRepository->findById($value);
-           $date = $this->amountRepository->dateRange($start_date,$end_date);
+           $room = $this->roomRepository->findById($room);
+           $dates = $this->amountRepository->dateRange($request['start_date'],$request['end_date']);
            $total = 0;
-           foreach ($date as $key){
-
-               $amount = $this->amountRepository->findPriceByDay($value,$key)->getPrice();
+           foreach ($dates as $date){
+               $amount = $this->amountRepository->findPriceByDay($room,$date)->getPrice();
                $total = $total + $amount;
            }
            dd($total);
@@ -110,6 +106,8 @@ class BookingController extends AbstractController
        $this->getDoctrine()->getManager()->flush();
 
        return $this->json([
+           'booking'=>$booking,
+           'bookingDetails'=>$bookingDetails
        ],201);
    }
 
@@ -121,15 +119,10 @@ class BookingController extends AbstractController
    public function show($id)
    {
        $booking = $this->bookingRepository->find($id);
-        $room = $this->roomRepository->findAll();
 
-       return $this->json([
-           'booking'=>$booking
-       ],200,[],[
-           ObjectNormalizer::IGNORED_ATTRIBUTES=>['date','bookingDetails'],
-           ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER=>function($object){
-               return $object->getId();
-           }]);
+       return $booking?
+           $this->json(['booking'=>$booking],200):
+           $this->json(['msg'=>'Could not find booking!'],404);
    }
 
     /**
@@ -141,14 +134,20 @@ class BookingController extends AbstractController
    public function update($id, Request $request)
    {
        $booking = $this->bookingRepository->find($id);
-       $request = json_decode($request->getContent(),true);
-       if ($request == null){
-           return false;
+       if (!isset($booking))
+       {
+           return $this->json(['msg'=>'Could not find booking'],404);
        }
-       $booking->setTotalAmount($request['totalAmount']);
+       $request = json_decode($request->getContent(),true);
+       if (!isset($request['status']))
+       {
+           return $this->json(['msg'=>'Expected field: status'],200);
+       }
        $booking->setStatus($request['status']);
+       $this->getDoctrine()->getManager()->persist($booking);
+       $this->getDoctrine()->getManager()->flush();
 
-       return $this->json([],201);
+       return $this->json(['booking'=>$booking],200);
    }
 
     /**
@@ -159,11 +158,13 @@ class BookingController extends AbstractController
    public function delete($id)
    {
        $booking = $this->bookingRepository->find($id);
+       if (!isset($booking))
+       {
+           return $this->json(['msg'=>'Could not find booking!'],404);
+       }
        $this->getDoctrine()->getManager()->remove($booking);
        $this->getDoctrine()->getManager()->flush();
 
-       return $this->json([
-           'booking'=>$booking
-       ],200);
+       return $this->json(['msg'=>'Deleted successfully!'],200);
    }
 }

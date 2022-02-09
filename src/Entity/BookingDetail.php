@@ -44,16 +44,27 @@ class BookingDetail
      */
     private $total;
 
+    /**
+     * @return int
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return Booking
+     */
     public function getBooking(): ?Booking
     {
         return $this->booking;
     }
 
+    /**
+     * @param Booking $booking
+     *
+     * @return $this
+     */
     public function setBooking(?Booking $booking): self
     {
         $this->booking = $booking;
@@ -61,11 +72,19 @@ class BookingDetail
         return $this;
     }
 
+    /**
+     * @return Room
+     */
     public function getRoom(): ?Room
     {
         return $this->room;
     }
 
+    /**
+     * @param Room $room
+     *
+     * @return $this
+     */
     public function setRoom(?Room $room): self
     {
         $this->room = $room;
@@ -73,11 +92,19 @@ class BookingDetail
         return $this;
     }
 
+    /**
+     * @return \DateTimeInterface
+     */
     public function getStartDate(): ?\DateTimeInterface
     {
         return $this->start_date;
     }
 
+    /**
+     * @param \DateTimeInterface $start_date
+     *
+     * @return $this
+     */
     public function setStartDate(\DateTimeInterface $start_date): self
     {
         $this->start_date = $start_date;
@@ -85,11 +112,19 @@ class BookingDetail
         return $this;
     }
 
+    /**
+     * @return \DateTimeInterface
+     */
     public function getEndDate(): ?\DateTimeInterface
     {
         return $this->end_date;
     }
 
+    /**
+     * @param \DateTimeInterface $end_date
+     *
+     * @return $this
+     */
     public function setEndDate(\DateTimeInterface $end_date): self
     {
         $this->end_date = $end_date;
@@ -97,11 +132,19 @@ class BookingDetail
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getTotal(): ?string
     {
         return $this->total;
     }
 
+    /**
+     * @param string $total
+     *
+     * @return $this
+     */
     public function setTotal(string $total): self
     {
         $this->total = $total;

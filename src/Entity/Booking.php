@@ -50,16 +50,27 @@ class Booking
         $this->bookingDetails = new ArrayCollection();
     }
 
+    /**
+     * @return int
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return Guest
+     */
     public function getGuest(): ?Guest
     {
         return $this->guest;
     }
 
+    /**
+     * @param Guest $guest
+     *
+     * @return $this
+     */
     public function setGuest(?Guest $guest): self
     {
         $this->guest = $guest;
@@ -67,11 +78,19 @@ class Booking
         return $this;
     }
 
+    /**
+     * @return \DateTimeInterface
+     */
     public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
     }
 
+    /**
+     * @param \DateTimeInterface $date
+     *
+     * @return $this
+     */
     public function setDate(?\DateTimeInterface $date): self
     {
         $this->date = $date;
@@ -79,11 +98,19 @@ class Booking
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getTotalAmount(): ?string
     {
         return $this->total_amount;
     }
 
+    /**
+     * @param string $total_amount
+     *
+     * @return $this
+     */
     public function setTotalAmount(?string $total_amount): self
     {
         $this->total_amount = $total_amount;
@@ -91,44 +118,22 @@ class Booking
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getStatus(): ?int
     {
         return $this->status;
     }
 
+    /**
+     * @param int $status
+     *
+     * @return $this
+     */
     public function setStatus(int $status): self
     {
         $this->status = $status;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|BookingDetail[]
-     */
-    public function getBookingDetails(): Collection
-    {
-        return $this->bookingDetails;
-    }
-
-    public function addBookingDetail(BookingDetail $bookingDetail): self
-    {
-        if (!$this->bookingDetails->contains($bookingDetail)) {
-            $this->bookingDetails[] = $bookingDetail;
-            $bookingDetail->setBooking($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBookingDetail(BookingDetail $bookingDetail): self
-    {
-        if ($this->bookingDetails->removeElement($bookingDetail)) {
-            // set the owning side to null (unless already changed)
-            if ($bookingDetail->getBooking() === $this) {
-                $bookingDetail->setBooking(null);
-            }
-        }
 
         return $this;
     }

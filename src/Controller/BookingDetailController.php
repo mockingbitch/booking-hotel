@@ -29,7 +29,7 @@ class BookingDetailController extends AbstractController
         $bookingDetails = $this->bookingDetailRepository->findAll();
 
         return $bookingDetails?
-            $this->json(['bookingDetails'=>$bookingDetails],200):
-            $this->json(['msg'=>'Empty booking detail!']);
+            $this->json(['bookingDetails' => $bookingDetails],200):
+            $this->json(['msg' => 'Empty booking detail!']);
     }
 }

@@ -162,12 +162,12 @@ class BookingController extends AbstractController
        $booking = $this->bookingRepository->find($id);
        if (!isset($booking))
        {
-           return $this->json(['msg'=>'Could not find booking'],404);
+           return $this->json(['msg' => 'Could not find booking'],404);
        }
        $request = json_decode($request->getContent(),true);
        if (!isset($request['status']))
        {
-           return $this->json(['msg'=>'Expected field: status'],200);
+           return $this->json(['msg' => 'Expected field: status'],200);
        }
        $booking->setStatus($request['status']);
        $this->getDoctrine()->getManager()->persist($booking);
@@ -186,7 +186,7 @@ class BookingController extends AbstractController
        $booking = $this->bookingRepository->find($id);
        if (!isset($booking))
        {
-           return $this->json(['msg'=>'Could not find booking!'],404);
+           return $this->json(['msg' => 'Could not find booking!'],404);
        }
        $this->getDoctrine()->getManager()->remove($booking);
        $this->getDoctrine()->getManager()->flush();

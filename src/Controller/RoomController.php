@@ -29,9 +29,8 @@ RoomController extends AbstractController
      */
     public function list()
     {
-//        $rooms = $this->roomRepository->findAll();
-        $r = 19;
-        $rooms = $this->roomRepository->find($r);
+        $rooms = $this->roomRepository->findAll();
+
         return $rooms?
             $this->json(['rooms'=>$rooms],200):
             $this->json(['msg'=>'Empty room!'],200);
@@ -49,7 +48,7 @@ RoomController extends AbstractController
         if (!isset($request['name']))
         {
             return $this->json([
-               'msg'=>'Expected field: name'
+               'msg' => 'Expected field: name'
             ],200);
         }
         $room->setName($request['name']);
@@ -57,7 +56,7 @@ RoomController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
 
         return $this->json([
-            'room'=>$room
+            'room' => $room
         ],201);
     }
 
@@ -71,8 +70,8 @@ RoomController extends AbstractController
         $room = $this->roomRepository->find($id);
 
         return $room?
-            $this->json(['room'=>$room],200):
-            $this->json(['msg'=>'Could not find room!'],404);
+            $this->json(['room' => $room],200):
+            $this->json(['msg' => 'Could not find room!'],404);
     }
 
     /**
@@ -87,14 +86,14 @@ RoomController extends AbstractController
         if (!isset($room))
         {
             return $this->json([
-               'msg'=>'Could not find room!'
+               'msg' => 'Could not find room!'
             ],404);
         }
         $request = json_decode($request->getContent(),true);
         if (!isset($request['name']))
         {
             return $this->json([
-                'msg'=>'Expected value Name!'
+                'msg' => 'Expected value Name!'
             ],200);
         }
         $room->setName($request['name']);
@@ -102,7 +101,7 @@ RoomController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
 
         return $this->json([
-            'room'=>$room
+            'room' => $room
         ],200);
     }
 
@@ -117,56 +116,63 @@ RoomController extends AbstractController
         if (!isset($room))
         {
             return $this->json([
-                'msg'=>'Could not find room!'
+                'msg' => 'Could not find room!'
             ],404);
         }
         $this->getDoctrine()->getManager()->remove($room);
         $this->getDoctrine()->getManager()->flush();
 
         return $this->json([
-            'msg'=>'Delete successfully!'
+            'msg' => 'Delete successfully!'
         ],200);
     }
 
     /**
-     * @param $date
+     * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function searchByDay($date)
+    public function search(Request $request)
     {
-        $rooms = $this->roomRepository->findByDay($date);
+        $name = $request->query->get('name');
+        $date = $request->query->get('date');
+        $min = $request->query->get('min');
+        $max = $request->query->get('max');
+        $start_date = $request->query->get('start_date');
+        $end_date = $request->query->get('end_date');
+        if ($name !== null)
+        {
+            $rooms = $this->roomRepository->findByName($name);
 
-        return $rooms?
-            $this->json(['rooms'=>$rooms],200):
-            $this->json(['msg'=>'Could not find room!'],200);
-    }
+            return $rooms?
+                $this->json(['rooms' => $rooms],200):
+                $this->json(['msg' => 'Could not find room!'],200);
+        }
+        elseif ($date !== null)
+        {
+            $rooms = $this->roomRepository->findByDay($date);
 
-    /**
-     * @param $name
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function searchByName($name)
-    {
-        $rooms = $this->roomRepository->findByName($name);
-        return $rooms?
-            $this->json(['rooms'=>$rooms],200):
-            $this->json(['msg'=>'Could not find room!'],200);
-    }
+            return $rooms?
+                $this->json(['rooms' => $rooms],200):
+                $this->json(['msg' => 'Could not find room!'],200);
+        }
+        elseif($min !== null && $max !== null)
+        {
+            $rooms = $this->roomRepository->findByPriceRange($min, $max);
 
-    /**
-     * @param $min
-     * @param $max
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function searchByPriceRange($min, $max)
-    {
-        $rooms = $this->roomRepository->findByPriceRange($min, $max);
+            return $rooms?
+                $this->json(['rooms' => $rooms],200):
+                $this->json(['msg' => 'Could not find room!'],200);
+        }
+        elseif ($start_date !== null && $end_date !== null)
+        {
+            $rooms = $this->roomRepository->findByDayRange($start_date, $end_date);
 
-        return $rooms?
-            $this->json(['rooms'=>$rooms],200):
-            $this->json(['msg'=>'Could not find room!'],200);
+            return $rooms?
+                $this->json(['rooms' => $rooms],200):
+                $this->json(['msg' => 'Could not find room!'],200);
+        }
+
+        return $this->json(['msg' => 'Could not find room!', 200]);
     }
 }

@@ -39,8 +39,8 @@ class AvailabilityController extends AbstractController
         $availabilities = $this->availabilityRepository->findAll();
 
         return $availabilities?
-            $this->json(['availabilites'=>$availabilities],200):
-            $this->json(['msg'=>'Empty availability'],200);
+            $this->json(['availabilites' => $availabilities],200):
+            $this->json(['msg' => 'Empty availability'],200);
     }
 
     /**
@@ -53,12 +53,12 @@ class AvailabilityController extends AbstractController
         $request = json_decode($request->getContent(),true);
         if (!isset($request['start_date'],$request['end_date'],$request['room'],$request['stock']))
         {
-            return $this->json(['msg'=>'Expected fields: room, stock, start_date, end_date'],200);
+            return $this->json(['msg' => 'Expected fields: room, stock, start_date, end_date'],200);
         }
         $room = $this->roomRepository->find($request['room']);
         if (!isset($room))
         {
-            return $this->json(['msg'=>'Could not find room!'],404);
+            return $this->json(['msg' => 'Could not find room!'],404);
         }
         $dates = $this->availabilityRepository->dateRange($request['start_date'],$request['end_date']);
         foreach($dates as $date)
@@ -79,6 +79,6 @@ class AvailabilityController extends AbstractController
         }
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->json(['availability'=>$availability],201);
+        return $this->json(['availability' => $availability],201);
     }
 }

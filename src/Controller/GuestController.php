@@ -30,8 +30,8 @@ class GuestController extends AbstractController
         $guests = $this->guestRepository->findAll();
 
         return $guests?
-            $this->json(['guests'=>$guests],200):
-            $this->json(['msg'=>'Empty guest!'],200);
+            $this->json(['guests' => $guests],200):
+            $this->json(['msg' => 'Empty guest!'],200);
     }
 
     /**
@@ -43,16 +43,16 @@ class GuestController extends AbstractController
     {
         $guest = new Guest();
         $request = json_decode($request->getContent(), true);
-        if (!isset($request['name'],$request['phone']))
+        if (!isset($request['name'], $request['phone']))
         {
-            return $this->json(['msg'=>'Expected fields: name, phone'],200);
+            return $this->json(['msg' => 'Expected fields: name, phone'],200);
         }
         $guest->setName($request['name']);
         $guest->setPhone($request['phone']);
         $this->getDoctrine()->getManager()->persist($guest);
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->json(['guest'=>$guest],201);
+        return $this->json(['guest' => $guest],201);
     }
 
     /**
@@ -65,8 +65,8 @@ class GuestController extends AbstractController
         $guest = $this->guestRepository->find($id);
 
         return $guest?
-            $this->json(['guest'=>$guest],200):
-            $this->json(['msg'=>'Could not find guest'],404);
+            $this->json(['guest' => $guest],200):
+            $this->json(['msg' => 'Could not find guest'],404);
     }
 
     /**
@@ -80,19 +80,19 @@ class GuestController extends AbstractController
         $guest = $this->guestRepository->find($id);
         if (!isset($guest))
         {
-            return $this->json(['msg'=>'Could not find guest'],404);
+            return $this->json(['msg' => 'Could not find guest'],404);
         }
         $request = json_decode($request->getContent(),true);
-        if (!isset($request['name'],$request['phone']))
+        if (!isset($request['name'], $request['phone']))
         {
-            return $this->json(['msg'=>'Expected fields: name, phone'],200);
+            return $this->json(['msg' => 'Expected fields: name, phone'],200);
         }
         $guest->setName($request['name']);
         $guest->setPhone($request['phone']);
         $this->getDoctrine()->getManager()->persist($guest);
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->json(['guest'=>$guest],200);
+        return $this->json(['guest' => $guest],200);
     }
 
     /**
@@ -105,11 +105,11 @@ class GuestController extends AbstractController
         $guest = $this->guestRepository->find($id);
         if (!isset($guest))
         {
-            return $this->json(['msg'=>'Could not find guest'],404);
+            return $this->json(['msg' => 'Could not find guest'],404);
         }
         $this->getDoctrine()->getManager()->remove($guest);
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->json(['msg'=>'Deleted successfully!'],200);
+        return $this->json(['msg' => 'Deleted successfully!'],200);
     }
 }

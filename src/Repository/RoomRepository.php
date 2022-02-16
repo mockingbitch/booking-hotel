@@ -72,9 +72,9 @@ class RoomRepository extends ServiceEntityRepository
     public function findByDay($date)
     {
         return $this->createQueryBuilder('r')
-            ->select('r.id', 'r.name', 'av.stock', 'am.price')
-            ->leftJoin('App\Entity\Availability','av', \Doctrine\ORM\Query\Expr\Join::WITH,'av.room=r')
-            ->leftJoin('App\Entity\Amount','am', \Doctrine\ORM\Query\Expr\Join::WITH,'am.room=r')
+            ->select('r.id', 'r.name', 'av.stock', 'am.price', 'av.day')
+            ->leftJoin('App\Entity\Availability','av', \Doctrine\ORM\Query\Expr\Join::WITH,'av.room = r')
+            ->leftJoin('App\Entity\Amount','am', \Doctrine\ORM\Query\Expr\Join::WITH,'am.room = r')
             ->andWhere('am.day=:date')
             ->andWhere('av.day=:date')
             ->setParameter('date',$date)
@@ -100,16 +100,42 @@ class RoomRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @param $min
+     * @param $max
+     *
+     * @return float|int|mixed|string
+     */
     public function findByPriceRange($min, $max)
     {
         return $this->createQueryBuilder('r')
             ->select('r.id', 'r.name', 'av.stock', 'am.price', 'am.day')
-            ->leftJoin('App\Entity\Availability','av', \Doctrine\ORM\Query\Expr\Join::WITH,'av.room=r')
-            ->leftJoin('App\Entity\Amount','am', \Doctrine\ORM\Query\Expr\Join::WITH,'am.room=r')
+            ->leftJoin('App\Entity\Availability','av', \Doctrine\ORM\Query\Expr\Join::WITH,'av.room = r')
+            ->leftJoin('App\Entity\Amount','am', \Doctrine\ORM\Query\Expr\Join::WITH,'am.room = r')
             ->andWhere('am.price BETWEEN :from AND :to')
             ->andWhere('am.day = av.day')
             ->setParameter('from', $min)
             ->setParameter('to', $max)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param $start_date
+     * @param $end_date
+     *
+     * @return float|int|mixed|string
+     */
+    public function findByDayRange($start_date, $end_date)
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r.id', 'r.name', 'av.stock', 'am.price', 'am.day')
+            ->leftJoin('App\Entity\Availability','av', \Doctrine\ORM\Query\Expr\Join::WITH,'av.room = r')
+            ->leftJoin('App\Entity\Amount','am', \Doctrine\ORM\Query\Expr\Join::WITH,'am.room = r')
+            ->andWhere('am.day BETWEEN :from AND :to')
+            ->andWhere('am.day = av.day')
+            ->setParameter('from', $start_date)
+            ->setParameter('to', $end_date)
             ->getQuery()
             ->getResult();
     }

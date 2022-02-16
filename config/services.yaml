@@ -33,6 +33,7 @@ services:
         tags:
             - { name: serializer.normalizer }
 
-    App\Controller\BookingController:
+    Symfony\Component\Serializer\Normalizer\DateTimeNormalizer:
         arguments:
-            $availabilityService: '@App\Service\AvailabilityService'
+            $defaultContext:
+                datetime_format: 'Y-m-d'

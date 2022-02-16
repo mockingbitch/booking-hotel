@@ -81,7 +81,7 @@ class AmountController extends AbstractController
         }
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->json(['amount'=>$amount],201);
+        return $this->json(['amount' => $amount],201);
     }
 
     /**
@@ -107,7 +107,7 @@ class AmountController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
 
         return $this->json([
-            'amount'=>$amount
+            'amount' => $amount
         ],200);
     }
 }

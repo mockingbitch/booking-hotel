@@ -29,19 +29,9 @@ room_delete:
   controller: App\Controller\RoomController::delete
   methods: [DELETE]
 
-room_search_by_day:
-  path: /room/day/{date}
-  controller: App\Controller\RoomController::searchByDay
-  methods: [GET]
-
-room_search_by_name:
-  path: /room/name/{name}
-  controller: App\Controller\RoomController::searchByName
-  methods: [GET]
-
-room_search_by_price_range:
-  path: /room/price/{min}/{max}
-  controller: App\Controller\RoomController::searchByPriceRange
+room_search:
+  path: /room/search/get
+  controller: App\Controller\RoomController::search
   methods: [GET]
 
 #Guest

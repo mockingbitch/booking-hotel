@@ -110,48 +110,19 @@ class AmountRepository extends ServiceEntityRepository
 
     /**
      * @param $room_id
-     * @param $special_date
+     * @param $date
      *
      * @return float|int|mixed|string
      */
-    public function findByDay($room_id,$special_date)
+    public function findByDay($room_id,$date)
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.room = :val')
             ->andWhere('a.day = :day')
             ->setParameter('val', $room_id)
-            ->setParameter('day',$special_date)
+            ->setParameter('day',$date)
             ->getQuery()
             ->getResult()
             ;
-    }
-
-    /**
-     * @param $room
-     * @param $day
-     *
-     * @return float|int|mixed|string|null
-     *
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function findPriceByDay($room,$day)
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.room = :val')
-            ->andWhere('a.day = :day')
-            ->setParameter('val', $room)
-            ->setParameter('day',$day)
-            ->getQuery()
-            ->getOneOrNullResult()
-            ;
-    }
-
-    public function findDay($date)
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.day = :val')
-            ->setParameter('val',$date)
-            ->getQuery()
-            ->getResult();
     }
 }

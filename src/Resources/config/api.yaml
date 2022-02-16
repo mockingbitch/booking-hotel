@@ -29,6 +29,21 @@ room_delete:
   controller: App\Controller\RoomController::delete
   methods: [DELETE]
 
+room_search_by_day:
+  path: /room/day/{date}
+  controller: App\Controller\RoomController::searchByDay
+  methods: [GET]
+
+room_search_by_name:
+  path: /room/name/{name}
+  controller: App\Controller\RoomController::searchByName
+  methods: [GET]
+
+room_search_by_price_range:
+  path: /room/price/{min}/{max}
+  controller: App\Controller\RoomController::searchByPriceRange
+  methods: [GET]
+
 #Guest
 guest_list:
   path: /guest
@@ -56,6 +71,11 @@ guest_delete:
   methods: [DELETE]
 
 #Amount
+amount_list:
+  path: /amount
+  controller: App\Controller\AmountController::list
+  methods: [GET]
+
 amount_create:
   path: /amount
   controller: App\Controller\AmountController::create
@@ -75,4 +95,21 @@ booking_create:
 booking_list:
   path: /booking
   controller: App\Controller\BookingController::list
+  methods: [GET]
+
+#Availability
+availability_list:
+  path: /availability
+  controller: App\Controller\AvailabilityController::list
+  methods: [GET]
+
+availability_create:
+  path: /availability
+  controller: App\Controller\AvailabilityController::create
+  methods: [POST]
+
+#BookingDetail:
+booking_detail_list:
+  path: /booking_detail
+  controller: App\Controller\BookingDetailController::list
   methods: [GET]

@@ -69,6 +69,7 @@ class AmountRepository extends ServiceEntityRepository
      * @param $last
      * @param $step
      * @param $format
+     *
      * @return array
      */
     function dateRange($first, $last) {
@@ -85,27 +86,27 @@ class AmountRepository extends ServiceEntityRepository
         return $dates;
     }
 
-    /**
-     * @param $room_id
-     * @param $start_date
-     * @param $end_date
-     *
-     * @return float|int|mixed|string|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function findByDayRange($room_id,$start_date,$end_date)
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.room = :val')
-            ->andWhere('a.day >= :start')
-            ->andWhere('a.day <= :end')
-            ->setParameter('val', $room_id)
-            ->setParameter('start',$start_date)
-            ->setParameter('end',$end_date)
-            ->getQuery()
-            ->getOneOrNullResult()
-            ;
-    }
+//    /**
+//     * @param $room_id
+//     * @param $start_date
+//     * @param $end_date
+//     *
+//     * @return float|int|mixed|string|null
+//     * @throws \Doctrine\ORM\NonUniqueResultException
+//     */
+//    public function findByDayRange($room_id,$start_date,$end_date)
+//    {
+//        return $this->createQueryBuilder('a')
+//            ->andWhere('a.room = :val')
+//            ->andWhere('a.day >= :start')
+//            ->andWhere('a.day <= :end')
+//            ->setParameter('val', $room_id)
+//            ->setParameter('start',$start_date)
+//            ->setParameter('end',$end_date)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//            ;
+//    }
 
     /**
      * @param $room_id
@@ -125,7 +126,14 @@ class AmountRepository extends ServiceEntityRepository
             ;
     }
 
-
+    /**
+     * @param $room
+     * @param $day
+     *
+     * @return float|int|mixed|string|null
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function findPriceByDay($room,$day)
     {
         return $this->createQueryBuilder('a')
@@ -136,5 +144,14 @@ class AmountRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult()
             ;
+    }
+
+    public function findDay($date)
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.day = :val')
+            ->setParameter('val',$date)
+            ->getQuery()
+            ->getResult();
     }
 }

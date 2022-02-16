@@ -4,13 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Room;
 use App\Repository\RoomRepository;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\RoomService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class
 RoomController extends AbstractController
@@ -33,8 +29,9 @@ RoomController extends AbstractController
      */
     public function list()
     {
-        $rooms = $this->roomRepository->findAll();
-
+//        $rooms = $this->roomRepository->findAll();
+        $r = 19;
+        $rooms = $this->roomRepository->find($r);
         return $rooms?
             $this->json(['rooms'=>$rooms],200):
             $this->json(['msg'=>'Empty room!'],200);
@@ -52,7 +49,7 @@ RoomController extends AbstractController
         if (!isset($request['name']))
         {
             return $this->json([
-               'msg'=>'Expected value Name'
+               'msg'=>'Expected field: name'
             ],200);
         }
         $room->setName($request['name']);
@@ -129,5 +126,47 @@ RoomController extends AbstractController
         return $this->json([
             'msg'=>'Delete successfully!'
         ],200);
+    }
+
+    /**
+     * @param $date
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function searchByDay($date)
+    {
+        $rooms = $this->roomRepository->findByDay($date);
+
+        return $rooms?
+            $this->json(['rooms'=>$rooms],200):
+            $this->json(['msg'=>'Could not find room!'],200);
+    }
+
+    /**
+     * @param $name
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function searchByName($name)
+    {
+        $rooms = $this->roomRepository->findByName($name);
+        return $rooms?
+            $this->json(['rooms'=>$rooms],200):
+            $this->json(['msg'=>'Could not find room!'],200);
+    }
+
+    /**
+     * @param $min
+     * @param $max
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function searchByPriceRange($min, $max)
+    {
+        $rooms = $this->roomRepository->findByPriceRange($min, $max);
+
+        return $rooms?
+            $this->json(['rooms'=>$rooms],200):
+            $this->json(['msg'=>'Could not find room!'],200);
     }
 }

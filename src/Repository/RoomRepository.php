@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\AST\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -61,5 +62,55 @@ class RoomRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult()
             ;
+    }
+
+    /**
+     * @param $date
+     *
+     * @return float|int|mixed|string
+     */
+    public function findByDay($date)
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r.id', 'r.name', 'av.stock', 'am.price')
+            ->leftJoin('App\Entity\Availability','av', \Doctrine\ORM\Query\Expr\Join::WITH,'av.room=r')
+            ->leftJoin('App\Entity\Amount','am', \Doctrine\ORM\Query\Expr\Join::WITH,'am.room=r')
+            ->andWhere('am.day=:date')
+            ->andWhere('av.day=:date')
+            ->setParameter('date',$date)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param $name
+     *
+     * @return float|int|mixed|string
+     */
+    public function findByName($name)
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r.id', 'r.name', 'av.stock', 'am.price', 'av.day')
+            ->leftJoin('App\Entity\Availability','av',\Doctrine\ORM\Query\Expr\Join::WITH,'av.room = r')
+            ->leftJoin('App\Entity\Amount','am',\Doctrine\ORM\Query\Expr\Join::WITH,'am.room = r')
+            ->andWhere('r.name LIKE :name')
+            ->andWhere('av.day = am.day')
+            ->setParameter('name','%'.$name.'%')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByPriceRange($min, $max)
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r.id', 'r.name', 'av.stock', 'am.price', 'am.day')
+            ->leftJoin('App\Entity\Availability','av', \Doctrine\ORM\Query\Expr\Join::WITH,'av.room=r')
+            ->leftJoin('App\Entity\Amount','am', \Doctrine\ORM\Query\Expr\Join::WITH,'am.room=r')
+            ->andWhere('am.price BETWEEN :from AND :to')
+            ->andWhere('am.day = av.day')
+            ->setParameter('from', $min)
+            ->setParameter('to', $max)
+            ->getQuery()
+            ->getResult();
     }
 }

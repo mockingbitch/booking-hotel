@@ -7,8 +7,6 @@ use App\Repository\AmountRepository;
 use App\Repository\RoomRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class AmountController extends AbstractController
 {
@@ -54,7 +52,6 @@ class AmountController extends AbstractController
      */
     public function create(Request $request)
     {
-
         $request = json_decode($request->getContent(),true);
         if (!isset($request['start_date'],$request['end_date'],$request['room'],$request['price']))
         {

@@ -140,39 +140,10 @@ RoomController extends AbstractController
         $max = $request->query->get('max');
         $start_date = $request->query->get('start_date');
         $end_date = $request->query->get('end_date');
-        if ($name !== null)
-        {
-            $rooms = $this->roomRepository->findByName($name);
+        $rooms = $this->roomRepository->findByFields($date, $name, $min, $max, $start_date, $end_date);
 
-            return $rooms?
-                $this->json(['rooms' => $rooms],200):
-                $this->json(['msg' => 'Could not find room!'],200);
-        }
-        elseif ($date !== null)
-        {
-            $rooms = $this->roomRepository->findByDay($date);
-
-            return $rooms?
-                $this->json(['rooms' => $rooms],200):
-                $this->json(['msg' => 'Could not find room!'],200);
-        }
-        elseif($min !== null && $max !== null)
-        {
-            $rooms = $this->roomRepository->findByPriceRange($min, $max);
-
-            return $rooms?
-                $this->json(['rooms' => $rooms],200):
-                $this->json(['msg' => 'Could not find room!'],200);
-        }
-        elseif ($start_date !== null && $end_date !== null)
-        {
-            $rooms = $this->roomRepository->findByDayRange($start_date, $end_date);
-
-            return $rooms?
-                $this->json(['rooms' => $rooms],200):
-                $this->json(['msg' => 'Could not find room!'],200);
-        }
-
-        return $this->json(['msg' => 'Could not find room!', 200]);
+        return $rooms?
+            $this->json(['rooms' => $rooms],200):
+            $this->json(['msg' => 'Could not find room!'],200);
     }
 }

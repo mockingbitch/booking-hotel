@@ -66,77 +66,45 @@ class RoomRepository extends ServiceEntityRepository
 
     /**
      * @param $date
-     *
-     * @return float|int|mixed|string
-     */
-    public function findByDay($date)
-    {
-        return $this->createQueryBuilder('r')
-            ->select('r.id', 'r.name', 'av.stock', 'am.price', 'av.day')
-            ->leftJoin('App\Entity\Availability','av', \Doctrine\ORM\Query\Expr\Join::WITH,'av.room = r')
-            ->leftJoin('App\Entity\Amount','am', \Doctrine\ORM\Query\Expr\Join::WITH,'am.room = r')
-            ->andWhere('am.day=:date')
-            ->andWhere('av.day=:date')
-            ->setParameter('date',$date)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * @param $name
-     *
-     * @return float|int|mixed|string
-     */
-    public function findByName($name)
-    {
-        return $this->createQueryBuilder('r')
-            ->select('r.id', 'r.name', 'av.stock', 'am.price', 'av.day')
-            ->leftJoin('App\Entity\Availability','av',\Doctrine\ORM\Query\Expr\Join::WITH,'av.room = r')
-            ->leftJoin('App\Entity\Amount','am',\Doctrine\ORM\Query\Expr\Join::WITH,'am.room = r')
-            ->andWhere('r.name LIKE :name')
-            ->andWhere('av.day = am.day')
-            ->setParameter('name','%'.$name.'%')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * @param $min
      * @param $max
-     *
-     * @return float|int|mixed|string
-     */
-    public function findByPriceRange($min, $max)
-    {
-        return $this->createQueryBuilder('r')
-            ->select('r.id', 'r.name', 'av.stock', 'am.price', 'am.day')
-            ->leftJoin('App\Entity\Availability','av', \Doctrine\ORM\Query\Expr\Join::WITH,'av.room = r')
-            ->leftJoin('App\Entity\Amount','am', \Doctrine\ORM\Query\Expr\Join::WITH,'am.room = r')
-            ->andWhere('am.price BETWEEN :from AND :to')
-            ->andWhere('am.day = av.day')
-            ->setParameter('from', $min)
-            ->setParameter('to', $max)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * @param $start_date
      * @param $end_date
      *
      * @return float|int|mixed|string
      */
-    public function findByDayRange($start_date, $end_date)
+    public function findByFields($date, $name, $min, $max, $start_date, $end_date)
     {
-        return $this->createQueryBuilder('r')
-            ->select('r.id', 'r.name', 'av.stock', 'am.price', 'am.day')
-            ->leftJoin('App\Entity\Availability','av', \Doctrine\ORM\Query\Expr\Join::WITH,'av.room = r')
-            ->leftJoin('App\Entity\Amount','am', \Doctrine\ORM\Query\Expr\Join::WITH,'am.room = r')
-            ->andWhere('am.day BETWEEN :from AND :to')
-            ->andWhere('am.day = av.day')
-            ->setParameter('from', $start_date)
-            ->setParameter('to', $end_date)
-            ->getQuery()
-            ->getResult();
+        $qb = $this->createQueryBuilder('r')
+            ->select('r.id', 'r.name', 'av.stock', 'am.price', 'av.day')
+            ->leftJoin('App\Entity\Availability','av',\Doctrine\ORM\Query\Expr\Join::WITH,'av.room = r')
+            ->leftJoin('App\Entity\Amount','am',\Doctrine\ORM\Query\Expr\Join::WITH,'am.room = r')
+            ->andWhere('am.day = av.day');
+        if ($name != null)
+        {
+            $qb->andWhere('r.name LIKE :name')
+                ->setParameter('name', '%'.$name.'%');
+        }
+        if ($min != null && $max != null)
+        {
+            $qb->andWhere('am.price BETWEEN :min AND :max')
+                ->setParameter('min', $min)
+                ->setParameter('max', $max);
+        }
+        if ($date != null)
+        {
+            $qb->andWhere('am.day =:date')
+                ->andWhere('av.day =:date')
+                ->setParameter('date', $date);
+        }
+        if ($start_date != null)
+        {
+            $qb->andWhere('am.day BETWEEN :from AND :to')
+                ->setParameter('from', $start_date)
+                ->setParameter('to', $end_date);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

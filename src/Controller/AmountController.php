@@ -65,6 +65,11 @@ class AmountController extends AbstractController
         $date = $this->amountRepository->dateRange($request['start_date'],$request['end_date']);
         foreach($date as $date)
         {
+            $amounts = $this->amountRepository->findByDay($request['room'], $date);
+            if ($amounts != null)
+            {
+                return $this->json(['msg' => 'Existed price on'.$date.'!'],200);
+            }
             $amount = new Amount();
             $amount->setRoom($room);
             $amount->setDay(\DateTime::createFromFormat('Y-m-d',$date));

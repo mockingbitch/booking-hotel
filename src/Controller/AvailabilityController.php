@@ -63,6 +63,11 @@ class AvailabilityController extends AbstractController
         $dates = $this->availabilityRepository->dateRange($request['start_date'],$request['end_date']);
         foreach($dates as $date)
         {
+            $availabilities = $this->availabilityRepository->findByDay($request['room'], $date);
+            if ($availabilities  != null)
+            {
+                return $this->json(['msg' => 'Existed stock on '.$date.'!'],200);
+            }
             $availability = new Availability();
             $availability->setRoom($room);
             $availability->setDay(\DateTime::createFromFormat('Y-m-d',$date));

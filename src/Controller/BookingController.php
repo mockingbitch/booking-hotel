@@ -38,11 +38,6 @@ class BookingController extends AbstractController
    private $amountRepository;
 
     /**
-     * @var $availabilityService
-     */
-   private $availabilityService;
-
-    /**
      * @var $availabilityRepository
      */
    private $availabilityRepository;
@@ -52,21 +47,18 @@ class BookingController extends AbstractController
      * @param GuestRepository $guestRepository
      * @param RoomRepository $roomRepository
      * @param AmountRepository $amountRepository
-     * @param AvailabilityService $availabilityService
      */
    public function __construct(
        BookingRepository $bookingRepository,
        GuestRepository $guestRepository,
        RoomRepository $roomRepository,
        AmountRepository $amountRepository,
-       AvailabilityService $availabilityService,
        AvailabilityRepository $availabilityRepository)
    {
        $this->bookingRepository = $bookingRepository;
        $this->guestRepository = $guestRepository;
        $this->roomRepository = $roomRepository;
        $this->amountRepository = $amountRepository;
-       $this->availabilityService = $availabilityService;
        $this->availabilityRepository = $availabilityRepository;
    }
 

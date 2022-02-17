@@ -86,4 +86,22 @@ class AvailabilityRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $room_id
+     * @param $date
+     *
+     * @return float|int|mixed|string
+     */
+    public function findByDay($room_id,$date)
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.room = :val')
+            ->andWhere('a.day = :day')
+            ->setParameter('val', $room_id)
+            ->setParameter('day',$date)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }

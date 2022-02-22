@@ -49,21 +49,20 @@ class AvailabilityRepository extends ServiceEntityRepository
     */
 
     /**
-     * @param $first
-     * @param $last
-     * @param $step
-     * @param $format
+     * @param string $first
+     * @param string $last
      *
      * @return array
      */
-    public function dateRange($first, $last) {
+    public function dateRange(string $first, string $last) : array
+    {
         $step = '+1 day';
         $format = 'Y-m-d';
         $dates = array();
         $current = strtotime($first);
         $last = strtotime($last);
 
-        while( $current <= $last ) {
+        while ($current <= $last) {
             $dates[] = date($format, $current);
             $current = strtotime($step, $current);
         }
@@ -71,12 +70,12 @@ class AvailabilityRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param $room
-     * @param $date
+     * @param int $room
+     * @param \DateTime $date
      *
-     * @return float|int|mixed|string
+     * @return array|null
      */
-    public function findRoom($room, $date)
+    public function findRoom(int $room, \DateTime $date) : array
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.day = :date')
@@ -88,18 +87,18 @@ class AvailabilityRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param $room_id
-     * @param $date
+     * @param int $room_id
+     * @param \DateTime $date
      *
-     * @return float|int|mixed|string
+     * @return array|null
      */
-    public function findByDay($room_id,$date)
+    public function findByDay(int $room_id, \DateTime $date) : array
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.room = :val')
             ->andWhere('a.day = :day')
             ->setParameter('val', $room_id)
-            ->setParameter('day',$date)
+            ->setParameter('day', $date)
             ->getQuery()
             ->getResult()
             ;

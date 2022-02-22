@@ -49,12 +49,12 @@ class AmountRepository extends ServiceEntityRepository
     */
 
     /**
-     * @param $id
+     * @param int $id
      * @return Amount|null
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function findByRoomId($id): ?Amount
+    public function findByRoomId(int $id): ?Amount
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.room = :val')
@@ -65,62 +65,41 @@ class AmountRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param $first
-     * @param $last
-     * @param $step
-     * @param $format
+     * @param string $first
+     * @param string $last
      *
      * @return array
      */
-    function dateRange($first, $last) {
+    public function dateRange(string $first, string $last) : array
+    {
         $step = '+1 day';
         $format = 'Y-m-d';
         $dates = array();
         $current = strtotime($first);
         $last = strtotime($last);
 
-        while( $current <= $last ) {
+        while ($current <= $last) {
             $dates[] = date($format, $current);
             $current = strtotime($step, $current);
         }
+
         return $dates;
     }
 
-//    /**
-//     * @param $room_id
-//     * @param $start_date
-//     * @param $end_date
-//     *
-//     * @return float|int|mixed|string|null
-//     * @throws \Doctrine\ORM\NonUniqueResultException
-//     */
-//    public function findByDayRange($room_id,$start_date,$end_date)
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.room = :val')
-//            ->andWhere('a.day >= :start')
-//            ->andWhere('a.day <= :end')
-//            ->setParameter('val', $room_id)
-//            ->setParameter('start',$start_date)
-//            ->setParameter('end',$end_date)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//            ;
-//    }
 
     /**
-     * @param $room_id
-     * @param $date
+     * @param int $room_id
+     * @param \DateTime $date
      *
-     * @return float|int|mixed|string
+     * @return array|null
      */
-    public function findByDay($room_id,$date)
+    public function findByDay(int $room_id,\DateTime $date) : array
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.room = :val')
             ->andWhere('a.day = :day')
             ->setParameter('val', $room_id)
-            ->setParameter('day',$date)
+            ->setParameter('day', $date)
             ->getQuery()
             ->getResult()
             ;

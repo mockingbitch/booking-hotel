@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Repository\BookingDetailRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
+use Symfony\Component\HttpFoundation\Response;
 
 class BookingDetailController extends AbstractController
 {
@@ -22,14 +22,14 @@ class BookingDetailController extends AbstractController
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return Response
      */
-    public function list()
+    public function list(): Response
     {
         $bookingDetails = $this->bookingDetailRepository->findAll();
 
-        return $bookingDetails?
-            $this->json(['bookingDetails' => $bookingDetails],200):
+        return $bookingDetails ?
+            $this->json(['bookingDetails' => $bookingDetails], 200) :
             $this->json(['msg' => 'Empty booking detail!']);
     }
 }

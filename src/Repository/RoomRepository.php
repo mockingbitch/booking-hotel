@@ -49,57 +49,50 @@ class RoomRepository extends ServiceEntityRepository
     }
     */
 
-    /**
-     * @param $room_id
-     *
-     * @return float|int|mixed|string
-     */
-    public function findById($room_id)
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.id = :val')
-            ->setParameter('val', $room_id)
-            ->getQuery()
-            ->getOneOrNullResult()
-            ;
-    }
+//    /**
+//     * @param int $room_id
+//     *
+//     * @return float|int|mixed|string
+//     */
+//    public function findById(int $room_id) :array
+//    {
+//        return $this->createQueryBuilder('r')
+//            ->andWhere('r.id = :val')
+//            ->setParameter('val', $room_id)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//            ;
+//    }
 
     /**
-     * @param $date
-     * @param $name
-     * @param $min
-     * @param $max
-     * @param $start_date
-     * @param $end_date
+     * @param string|null $name
+     * @param float|null $min
+     * @param float|null $max
+     * @param string|null $start_date
+     * @param string|null $end_date
      *
-     * @return float|int|mixed|string
+     * @return array
      */
-    public function findByFields($date, $name, $min, $max, $start_date, $end_date)
+    public function findByFields(?string $name, ?float $min, ?float $max, ?string $start_date, ?string $end_date) : array
     {
         $qb = $this->createQueryBuilder('r')
             ->select('r.id', 'r.name', 'av.stock', 'am.price', 'av.day')
-            ->leftJoin('App\Entity\Availability','av',\Doctrine\ORM\Query\Expr\Join::WITH,'av.room = r')
-            ->leftJoin('App\Entity\Amount','am',\Doctrine\ORM\Query\Expr\Join::WITH,'am.room = r')
+            ->leftJoin('App\Entity\Availability', 'av', \Doctrine\ORM\Query\Expr\Join::WITH, 'av.room = r')
+            ->leftJoin('App\Entity\Amount', 'am', \Doctrine\ORM\Query\Expr\Join::WITH, 'am.room = r')
             ->andWhere('am.day = av.day');
-        if ($name != null)
-        {
+
+        if (null !== $name) {
             $qb->andWhere('r.name LIKE :name')
                 ->setParameter('name', '%'.$name.'%');
         }
-        if ($min != null && $max != null)
-        {
+
+        if (null !== $min && null !== $max) {
             $qb->andWhere('am.price BETWEEN :min AND :max')
                 ->setParameter('min', $min)
                 ->setParameter('max', $max);
         }
-        if ($date != null)
-        {
-            $qb->andWhere('am.day =:date')
-                ->andWhere('av.day =:date')
-                ->setParameter('date', $date);
-        }
-        if ($start_date != null)
-        {
+
+        if (null !== $start_date && null !== $end_date) {
             $qb->andWhere('am.day BETWEEN :from AND :to')
                 ->setParameter('from', $start_date)
                 ->setParameter('to', $end_date);

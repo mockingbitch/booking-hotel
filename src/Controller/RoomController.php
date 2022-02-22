@@ -7,9 +7,9 @@ use App\Repository\RoomRepository;
 use App\Service\RoomService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-class
-RoomController extends AbstractController
+class RoomController extends AbstractController
 {
     /**
      * @var RoomRepository
@@ -25,31 +25,30 @@ RoomController extends AbstractController
     }
 
     /**
-     * @return false|string|\Symfony\Component\HttpFoundation\JsonResponse
+     * @return Response
      */
-    public function list()
+    public function list(): Response
     {
         $rooms = $this->roomRepository->findAll();
 
-        return $rooms?
-            $this->json(['rooms'=>$rooms],200):
-            $this->json(['msg'=>'Empty room!'],200);
+        return $rooms ?
+            $this->json(['rooms'=>$rooms], 200) :
+            $this->json(['msg'=>'Empty room!'], 200);
     }
 
     /**
      * @param Request $request
      *
-     * @return false|\Symfony\Component\HttpFoundation\JsonResponse
+     * @return Response
      */
-    public function create(Request $request)
+    public function create(Request $request): Response
     {
         $room = new Room();
         $request = json_decode($request->getContent(), true);
-        if (!isset($request['name']))
-        {
+        if (!isset($request['name'])) {
             return $this->json([
                'msg' => 'Expected field: name'
-            ],200);
+            ], 200);
         }
         $room->setName($request['name']);
         $this->getDoctrine()->getManager()->persist($room);
@@ -57,93 +56,95 @@ RoomController extends AbstractController
 
         return $this->json([
             'room' => $room
-        ],201);
+        ], 201);
     }
 
     /**
-     * @param $id
+     * @param int $id
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return Response
      */
-    public function show($id)
+    public function show(int $id): Response
     {
         $room = $this->roomRepository->find($id);
 
-        return $room?
-            $this->json(['room' => $room],200):
-            $this->json(['msg' => 'Could not find room!'],404);
+        return $room ?
+            $this->json(['room' => $room], 200) :
+            $this->json(['msg' => 'Could not find room!'], 404);
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return Response
      */
-    public function update($id, Request $request)
+    public function update(int $id, Request $request): Response
     {
         $room = $this->roomRepository->find($id);
-        if (!isset($room))
-        {
+
+        if (!isset($room)) {
             return $this->json([
                'msg' => 'Could not find room!'
-            ],404);
+            ], 404);
         }
-        $request = json_decode($request->getContent(),true);
-        if (!isset($request['name']))
-        {
+
+        $request = json_decode($request->getContent(), true);
+
+        if (!isset($request['name'])) {
             return $this->json([
                 'msg' => 'Expected value Name!'
-            ],200);
+            ], 200);
         }
+
         $room->setName($request['name']);
         $this->getDoctrine()->getManager()->persist($room);
         $this->getDoctrine()->getManager()->flush();
 
         return $this->json([
             'room' => $room
-        ],200);
+        ], 200);
     }
 
     /**
-     * @param $id
+     * @param int $id
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return Response
      */
-    public function delete($id)
+    public function delete(int $id): Response
     {
         $room = $this->roomRepository->find($id);
-        if (!isset($room))
-        {
+
+        if (!isset($room)) {
             return $this->json([
                 'msg' => 'Could not find room!'
-            ],404);
+            ], 404);
         }
+
         $this->getDoctrine()->getManager()->remove($room);
         $this->getDoctrine()->getManager()->flush();
 
         return $this->json([
             'msg' => 'Delete successfully!'
-        ],200);
+        ], 200);
     }
 
     /**
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return Response
      */
-    public function search(Request $request)
+    public function search(Request $request): Response
     {
         $name = $request->query->get('name');
-        $date = $request->query->get('date');
         $min = $request->query->get('min');
         $max = $request->query->get('max');
         $start_date = $request->query->get('start_date');
         $end_date = $request->query->get('end_date');
-        $rooms = $this->roomRepository->findByFields($date, $name, $min, $max, $start_date, $end_date);
+        $rooms = $this->roomRepository->findByFields($name, $min, $max, $start_date, $end_date);
 
-        return $rooms?
-            $this->json(['rooms' => $rooms],200):
-            $this->json(['msg' => 'Could not find room!'],200);
+        return $rooms ?
+            $this->json(['rooms' => $rooms], 200) :
+            $this->json(['msg' => 'Could not find room!'], 200);
     }
 }
